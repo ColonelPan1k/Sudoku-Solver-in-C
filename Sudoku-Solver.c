@@ -63,7 +63,72 @@ loadPuzzle(char* fileName)
         return p;
 }
 
+int isSafe(Puzzle* p, int val, int row, int col)
+{
+        //TODO
+}
 
+void
+placeVal(Puzzle* p, int val, int row, int col)
+{
+        p->values[row][col] = val;
+        p->subgridHasVal[row / SUBGRID_DIM][col / SUBGRID_DIM][val] = true;
+        p->rowHasval[row][val] = true;
+        p->colHasVal[col][val] = true;
+}
+
+void
+removeVal(Puzzle* p, int val, int row, int col)
+{
+        p->values[row][col] = 0;
+        p->subgridHasVal[row / SUBGRID_DIM][col / SUBGRID_DIM][val] = false;
+        p->rowHasval[row][val] = false;
+        p->colHasVal[col][val] = false;
+
+}
+
+int
+solvePuzzle(Puzzle* p, int n){
+        if (n == 81){
+                return true;
+        }
+
+        int row = n / 9;
+        int col = n % 9;
+
+        if (p->isFixed[row][col]){
+                if(solvePuzzle(p, (n+1))){
+                        return true;
+                }
+        }
+
+        for (int val = 1; val < DIM + 1; ++val){
+                if(isSafe(p, val, row, col)){
+                        placeVal(p, val, row, col)
+                
+
+                        if (solvePuzzle(p, n+1)){
+                            return true;
+                        }
+                        
+                        removeVal(p, row, col, val);
+                }
+        }
+        return false;
+}
+
+int
+WRAPPER_Solve(Puzzle* p)
+{
+        int found = solvePuzzle(p, 0);
+        return found;
+}
+
+void
+printPuzzle(Puzzle* p)
+{
+        //TODO
+}
 
 int
 main(int argc, char** argv)
@@ -71,8 +136,13 @@ main(int argc, char** argv)
         
         Puzzle* p = loadPuzzle(argv[1]);
 
-
-
+        if(WRAPPER_Solve(p) == 1){
+                printf("Solution found\n");
+                // printPuzle(p);
+        } else {
+                printf("Something went wrong\n");
+        }
+        
         free(p);
         return 0;
 }
