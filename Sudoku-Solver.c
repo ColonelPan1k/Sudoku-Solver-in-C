@@ -9,25 +9,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-
-#define DEFAULT_FILESIZE 169
-
-
-/* 
- * subgridHasVal[x][y][val]
- * Uses x,y coords of the subgrids, ie
- * (0,0) (0,1) (0,2)
- * (1,0) (1,1) (1,2)
- * (2,0) (2,1) (2,2)
- *
- * All txt files for this program will have a constant filesize
- */ 
+#define DIM 9
+#define SUBGRID_DIM = 3;
 
 typedef struct
 puzzle_t
 {
-        int values[9][9];
-        bool isFixed[9][9];
+        int values[DIM][DIM];
+        bool isFixed[DIM][DIM];
         bool subgridHasVal[2][2][9];
         bool colHasVal[9][9];
         bool rowHasval[9][9];
@@ -37,7 +26,7 @@ puzzle_t
 Puzzle*
 loadPuzzle(char* fileName)
 {
-        /* Initialize new puzzle */
+
         Puzzle* p = (Puzzle*)malloc(sizeof(Puzzle));
 
         memset(p->values, 0, 81);
@@ -45,16 +34,30 @@ loadPuzzle(char* fileName)
         memset(p->colHasVal, 0, 81);
         memset(p->rowHasval, 0, 81);
         memset(p->subgridHasVal, 0, 36);
-
-        /* Read contents of file into puzzle 
-         * and set values based on those nums
-         */
         
         FILE *fp;
         fp = fopen(fileName, "r");
 
-        // Having trouble reading the contents of the file into
-        // a buffer properly
+        int puzzleVal;
+        int i = 0;
+        int buffer[81];
+        
+        while((puzzleVal = fgetc(fp)) != EOF){
+                if (puzzleVal >= 48 && puzzleVal <=57){
+                        int row = i / 9;
+                        int col = i % 9;
+                        
+                        p->values[row][col] = puzzleVal - 48;
+                        printf("%i. [%i][%i]: %i\n", i, row, col, p->values[row][col]);
+                        
+                        ++i;
+                }
+        }
+
+                
+
+                
+
 
         fclose(fp);
         return p;
