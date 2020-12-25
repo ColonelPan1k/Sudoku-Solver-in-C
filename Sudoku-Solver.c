@@ -11,6 +11,8 @@
 #include <stdbool.h>
 #define DIM 9
 #define SUBGRID_DIM  3
+#define FILESIZE 81
+
 
 typedef struct
 puzzle_t
@@ -29,10 +31,10 @@ loadPuzzle(char* fileName)
 
         Puzzle* p = (Puzzle*)malloc(sizeof(Puzzle));
 
-        memset(p->values, 0, 81);
-        memset(p->isFixed, 0, 81);
-        memset(p->colHasVal, 0, 81);
-        memset(p->rowHasVal, 0, 81);
+        memset(p->values, 0, FILESIZE);
+        memset(p->isFixed, 0, FILESIZE);
+        memset(p->colHasVal, 0, FILESIZE);
+        memset(p->rowHasVal, 0, FILESIZE);
         memset(p->subgridHasVal, 0, 36);
         
         FILE *fp;
@@ -82,7 +84,6 @@ placeVal(Puzzle* p, int val, int row, int col)
         p->subgridHasVal[row / SUBGRID_DIM][col / SUBGRID_DIM][val] = true;
         p->rowHasVal[row][val] = true;
         p->colHasVal[col][val] = true;
-        printf("placed val: %i\n", val);
 }
 
 void
@@ -95,27 +96,35 @@ removeVal(Puzzle* p, int val, int row, int col)
 
 }
 
-/* I'm copying in my original notes to help me think this through */
+/* Something is going wrong with the recursion, it's not going as deep
+ * as it should and not placing the values.  I've made a debug puzzle for this, 
+ * but I might have to change around some code to get it to work.
+ * I may also just copy this over to a new file and change some of the values 
+ * around. 
+ */
 int
 solvePuzzle(Puzzle* p, int n){
 
-        printf("%i\n", n);
+        printf("Space: %i\n", n);
+        
         if (n == 81){
                 return true;
         }
 
-
-        
         int row = n / 9;
         int col = n % 9;
 
         if (p->isFixed[row][col]){
-                if( solvePuzzle(p, n + 1)){
+                if(solvePuzzle(p, n + 1)){
                         return true;
                 }
         }
 
-        for (int val = 1; val < 9; ++val){
+        for (int val = 1; val <= 9; ++val){
+
+                //printf("Tile: r%i, c%i\nisFixed: %i\nis %i safe: %i\n\n", row, col, p->isFixed[row][col], val, isSafe(p, val, row, col));
+
+                        
                 if (isSafe(p, val, row, col)){
                         placeVal(p, val, row, col);
 
@@ -123,13 +132,15 @@ solvePuzzle(Puzzle* p, int n){
                                 return true;
                         }
 
-
                         removeVal(p, val, row, col);
+
+                                
                 }
         }
-
+        
         return false;
 }
+                
 
 int
 WRAPPER_Solve(Puzzle* p)
