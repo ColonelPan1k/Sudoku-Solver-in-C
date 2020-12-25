@@ -10,7 +10,7 @@
 #include <string.h>
 #include <stdbool.h>
 #define DIM 9
-#define SUBGRID_DIM  3
+#define SUBGRID_DIM  2
 #define FILESIZE 81
 
 
@@ -19,9 +19,9 @@ puzzle_t
 {
         int values[DIM][DIM];
         bool isFixed[DIM][DIM];
-        bool subgridHasVal[2][2][9];
-        bool colHasVal[9][9];
-        bool rowHasVal[9][9];
+        bool subgridHasVal[SUBGRID_DIM][SUBGRID_DIM][DIM];
+        bool colHasVal[DIM][DIM];
+        bool rowHasVal[DIM][DIM];
         
 }Puzzle;
 
@@ -31,11 +31,11 @@ loadPuzzle(char* fileName)
 
         Puzzle* p = (Puzzle*)malloc(sizeof(Puzzle));
 
-        memset(p->values, 0, FILESIZE);
-        memset(p->isFixed, 0, FILESIZE);
-        memset(p->colHasVal, 0, FILESIZE);
-        memset(p->rowHasVal, 0, FILESIZE);
-        memset(p->subgridHasVal, 0, 36);
+        memset(p->values, 0, (DIM * DIM));
+        memset(p->isFixed, 0, (DIM * DIM));
+        memset(p->colHasVal, 0, (DIM * DIM));
+        memset(p->rowHasVal, 0, (DIM * DIM));
+        memset(p->subgridHasVal, 0, ((SUBGRID_DIM * 2) * DIM));
         
         FILE *fp;
         fp = fopen(fileName, "r");
@@ -96,12 +96,7 @@ removeVal(Puzzle* p, int val, int row, int col)
 
 }
 
-/* Something is going wrong with the recursion, it's not going as deep
- * as it should and not placing the values.  I've made a debug puzzle for this, 
- * but I might have to change around some code to get it to work.
- * I may also just copy this over to a new file and change some of the values 
- * around. 
- */
+// Something is wrong with the truth values of the numbers
 int
 solvePuzzle(Puzzle* p, int n){
 
@@ -123,7 +118,6 @@ solvePuzzle(Puzzle* p, int n){
         for (int val = 1; val <= 9; ++val){
 
                 //printf("Tile: r%i, c%i\nisFixed: %i\nis %i safe: %i\n\n", row, col, p->isFixed[row][col], val, isSafe(p, val, row, col));
-
                         
                 if (isSafe(p, val, row, col)){
                         placeVal(p, val, row, col);
@@ -133,11 +127,8 @@ solvePuzzle(Puzzle* p, int n){
                         }
 
                         removeVal(p, val, row, col);
-
-                                
                 }
         }
-        
         return false;
 }
                 
@@ -167,19 +158,8 @@ main(int argc, char** argv)
         
         Puzzle* p = loadPuzzle(argv[1]);
 
-        printf("Your initial puzzle looks like this:\n");
         printPuzzle(p);
 
-        int result = WRAPPER_Solve(p);
-        if(result == 1){
-                printf("Solution found\n");
-                printPuzzle(p);
-        } else if (result == 0) {
-                printf("Something went wrong\n");
-                printPuzzle(p);
-        } else {
-                printf("Something isn't right, the program returned: %i\n", result);
-        }
         
         
         free(p);
