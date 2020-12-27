@@ -1,6 +1,6 @@
 /* Sudoku Solver in C
  * 
- * Use 0 for blank values when writing out a puzzle
+ * 
  *
  */
 
@@ -10,7 +10,7 @@
 #include <string.h>
 #include <stdbool.h>
 #define DIM 9
-#define SUBGRID_DIM  2
+#define SUBGRID_DIM  3
 #define FILESIZE 81
 
 
@@ -35,14 +35,13 @@ loadPuzzle(char* fileName)
         memset(p->isFixed, 0, (DIM * DIM));
         memset(p->colHasVal, 0, (DIM * DIM));
         memset(p->rowHasVal, 0, (DIM * DIM));
-        memset(p->subgridHasVal, 0, ((SUBGRID_DIM * 2) * DIM));
+        memset(p->subgridHasVal, 0, (DIM * DIM));
         
         FILE *fp;
         fp = fopen(fileName, "r");
 
         int puzzleVal;
         int i = 0;
-        int buffer[81];
         
         while((puzzleVal = fgetc(fp)) != EOF){
                 if (puzzleVal >= 48 && puzzleVal <=57){
@@ -60,7 +59,7 @@ loadPuzzle(char* fileName)
                                 }
  
                         ++i;
-                }
+                } 
         }
 
 
@@ -99,8 +98,6 @@ removeVal(Puzzle* p, int val, int row, int col)
 // Something is wrong with the truth values of the numbers
 int
 solvePuzzle(Puzzle* p, int n){
-
-        printf("Space: %i\n", n);
         
         if (n == 81){
                 return true;
@@ -116,9 +113,6 @@ solvePuzzle(Puzzle* p, int n){
         }
 
         for (int val = 1; val <= 9; ++val){
-
-                //printf("Tile: r%i, c%i\nisFixed: %i\nis %i safe: %i\n\n", row, col, p->isFixed[row][col], val, isSafe(p, val, row, col));
-                        
                 if (isSafe(p, val, row, col)){
                         placeVal(p, val, row, col);
 
@@ -157,11 +151,17 @@ main(int argc, char** argv)
 {
         
         Puzzle* p = loadPuzzle(argv[1]);
-
         printPuzzle(p);
 
-        
+        if(WRAPPER_Solve(p) == 1){
+                printf("\nA solution has been found!\n");
+                printPuzzle(p);
+        } else {
+                printf("Something has gone wrong, here is the output:\n");
+                printPuzzle(p);
+        }
         
         free(p);
         return 0;
 }
+
