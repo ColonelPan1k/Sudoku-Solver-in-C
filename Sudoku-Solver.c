@@ -1,17 +1,11 @@
-/* Sudoku Solver in C
- * 
- * 
- *
- */
+/* Sudoku Solver in C */
 
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <stdbool.h>
 #define DIM 9
 #define SUBGRID_DIM  3
-#define FILESIZE 81
 
 
 typedef struct
@@ -29,14 +23,8 @@ Puzzle*
 loadPuzzle(char* fileName)
 {
 
-        Puzzle* p = (Puzzle*)malloc(sizeof(Puzzle));
+        Puzzle* p = (Puzzle*)calloc(1, sizeof(Puzzle));
 
-        memset(p->values, 0, (DIM * DIM));
-        memset(p->isFixed, 0, (DIM * DIM));
-        memset(p->colHasVal, 0, (DIM * DIM));
-        memset(p->rowHasVal, 0, (DIM * DIM));
-        memset(p->subgridHasVal, 0, (DIM * DIM));
-        
         FILE *fp;
         fp = fopen(fileName, "r");
 
@@ -95,7 +83,6 @@ removeVal(Puzzle* p, int val, int row, int col)
 
 }
 
-// Something is wrong with the truth values of the numbers
 int
 solvePuzzle(Puzzle* p, int n){
         
@@ -137,7 +124,6 @@ WRAPPER_Solve(Puzzle* p)
 void
 printPuzzle(Puzzle* p)
 {
-        // Still need to fix, this is just to test if it's working
         for(int row = 0; row < 9; ++row){
                 for (int col = 0; col < 9; ++col){
                         printf("%i ", p->values[row][col]);
@@ -154,14 +140,12 @@ main(int argc, char** argv)
         printPuzzle(p);
 
         if(WRAPPER_Solve(p) == 1){
-                printf("\nA solution has been found!\n");
+                printf("\nA solution has been found!\n\n");
                 printPuzzle(p);
         } else {
                 printf("Something has gone wrong, here is the output:\n");
                 printPuzzle(p);
         }
-        
-        free(p);
+
         return 0;
 }
-
