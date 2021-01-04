@@ -1,5 +1,9 @@
-/* Sudoku Solver in C */
-
+/* Sudoku Solver in C 
+ * 
+ * Details and process can be found at:
+ * https://zhaba.dev/Sudoku-Solver-in-C
+ * 
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,14 +23,24 @@ puzzle_t
         
 }Puzzle;
 
+/* Constructor for struct Puzzle, loads puzzle from text and assigns correct values for nums 1-9 */
 Puzzle*
 loadPuzzle(char* fileName)
 {
 
         Puzzle* p = (Puzzle*)calloc(1, sizeof(Puzzle));
+        if (p == NULL){
+                printf("ERROR: Could not allocate memory for puzzle P\n");
+                exit(-1);
+        }
 
         FILE *fp;
         fp = fopen(fileName, "r");
+
+        if (fp == NULL){
+                printf("ERROR: File %s could not be opened\n", fileName);
+                exit(-1);
+        }
 
         int puzzleVal;
         int i = 0;
@@ -39,7 +53,7 @@ loadPuzzle(char* fileName)
 
                         p->values[row][col] = val;
                         
-                        if( val > 0){
+                        if(val > 0){
                                 p->isFixed[row][col]   = true;
                                 p->rowHasVal[row][val] = true;
                                 p->colHasVal[col][val] = true;
@@ -55,6 +69,7 @@ loadPuzzle(char* fileName)
         return p;
 }
 
+/* Functions for checking the safety of a given square */
 int isSafe(Puzzle* p, int val, int row, int col)
 {
         return (!(p->rowHasVal[row][val])
@@ -83,9 +98,10 @@ removeVal(Puzzle* p, int val, int row, int col)
 
 }
 
+/* The main recursive backtracking function */
 int
 solvePuzzle(Puzzle* p, int n){
-        
+
         if (n == 81){
                 return true;
         }
@@ -113,7 +129,10 @@ solvePuzzle(Puzzle* p, int n){
         return false;
 }
                 
-
+/* A wrapper function for calling solvePuzzle() in main() 
+   since there will never be a reason to use any number
+   other than 0 for n in solvePuzzle()
+*/
 int
 WRAPPER_Solve(Puzzle* p)
 {
@@ -121,6 +140,7 @@ WRAPPER_Solve(Puzzle* p)
         return found;
 }
 
+/* A function to print the passed puzzle */
 void
 printPuzzle(Puzzle* p)
 {
