@@ -39,7 +39,7 @@ loadPuzzle(char* fileName)
 
         if (fp == NULL){
                 printf("ERROR: File %s could not be opened\n", fileName);
-                exit(-1);
+                exit(-1); 
         }
 
         int puzzleVal;
@@ -155,7 +155,7 @@ printPuzzle(Puzzle* p)
 int
 main(int argc, char** argv)
 {
-        
+ 
         Puzzle* p = loadPuzzle(argv[1]);
         printPuzzle(p);
 
