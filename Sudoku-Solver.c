@@ -45,6 +45,9 @@ loadPuzzle(char* fileName)
         int puzzleVal;
         int i = 0;
         
+        // Could maybe change this around to use fread to read the puzzle into values[][]
+        // but I don't think it would really be much of an improvement since it would just 
+        // have to loop through values[][] anyways to set the bool arrays
         while((puzzleVal = fgetc(fp)) != EOF){
                 if (puzzleVal >= 48 && puzzleVal <=57){
                         int row = i / 9;
