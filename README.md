@@ -66,8 +66,15 @@ C much more than I do python, but I also love how easy it is to write Python).
    for each of the new features added above.  There will be options 
    to solve from a raw text file, a single image, or a video feed
    
-|Python Packages to be used|
-|--------------------------|
-|Tensorflow | Pull out the numbers from a picture of a sudoku puzzle|
-|OpenCV | Image Processing and preppping for tensorflow|
-|--------------------------|
+## Packages Used
+1. Tensorflow - ML Library for extracting the numbers from an image
+   of a sudoku puzzle
+   
+2. OpenCV - Used for getting webcam data.  I'm using this project 
+   as a soft introduction to OpenCV so I can build more advanced
+   things in the future.
+   
+3. Pillows - Used for outputting the solution to an image file
+
+4. (Maybe) Tkinter - Used to make a GUI interface for the program 
+   and move some functionality away from the command line.
